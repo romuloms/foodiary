@@ -3,6 +3,7 @@ import { hash } from 'bcryptjs';
 
 import { db } from '../db';
 import { eq } from 'drizzle-orm';
+import { signAccessTokenFor } from '../lib/jwt';
 
 import { HttpRequest, HttpResponse } from '../types/Http';
 import { badRequest, conflict, created } from '../utils/http';
@@ -60,8 +61,10 @@ export class SignUpController {
                 id: usersTable.id,
             });
 
+        const accessToken = signAccessTokenFor(user.id);
+
         return created({
-            userId: user.id,
+            accessToken,
         });
     }
 }
